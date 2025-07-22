@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { signup, login } = require("../Controllers/auth.controller");
+const { signup, login, verifyEmail } = require("../Controllers/auth.controller");
 
 router.post("/signup", signup);
 router.post("/login", login);
+router.get("/verify/:token", verifyEmail); // New route for the email link
 
 module.exports = router;

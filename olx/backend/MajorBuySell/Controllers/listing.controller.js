@@ -1,15 +1,11 @@
 const Listing = require("../Models/listing.model");
 const uploadOnCloudinary = require("../Utils/uploadOnCloudinary");
 
-// In listing.controller.js
-
 const createListing = async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: "Image file is required" });
     }
-
-    // Get all possible fields from the request body
     const { 
       name, description, category, condition, price, location, 
       brand, dateOfPurchase, distanceCovered, sarValue 
@@ -22,23 +18,14 @@ const createListing = async (req, res) => {
     }
 
     const listing = new Listing({
-      name,
-      description,
-      category,
-      condition,
-      price,
-      location,
-      brand,
-      dateOfPurchase,
-      distanceCovered, // Add new optional field
-      sarValue,        // Add new optional field
+      name, description, category, condition, price, location, 
+      brand, dateOfPurchase, distanceCovered, sarValue,
       image: uploadResult.secure_url,
       postedBy: req.userId,
     });
 
     await listing.save();
     res.status(201).json({ message: "Listing created", listing });
-
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -46,16 +33,33 @@ const createListing = async (req, res) => {
 
 const getAllListings = async (req, res) => {
   try {
-    const listings = await Listing.find({ isAvailable: true }).populate("postedBy", "name");
+    // This is the updated search and filter logic
+    const { search } = req.query;
+    const query = { isAvailable: true };
+
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+        { category: { $regex: search, $options: "i" } }
+      ];
+    }
+
+    const listings = await Listing.find(query).populate("postedBy", "name");
     res.status(200).json(listings);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
+// In listing.controller.js
+
 const getListingById = async (req, res) => {
   try {
-    const listing = await Listing.findById(req.params.id).populate("postedBy", "name");
+    // We now populate name, email, AND phoneNo
+    const listing = await Listing.findById(req.params.id)
+      .populate("postedBy", "name email phoneNo");
+      
     if (!listing) return res.status(404).json({ message: "Listing not found" });
     res.status(200).json(listing);
   } catch (error) {
@@ -85,23 +89,22 @@ const deleteListing = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 const updateListing = async (req, res) => {
   try {
     const listing = await Listing.findById(req.params.id);
     if (!listing) {
       return res.status(404).json({ message: "Listing not found" });
     }
-    // Ensure the person updating is the person who posted it
     if (listing.postedBy.toString() !== req.userId) {
-      return res.status(403).json({ message: "User not authorized to update this listing" });
+      return res.status(403).json({ message: "User not authorized" });
     }
-    // Update the listing with new data from the request body
     const updatedListing = await Listing.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true } // Return the updated document
+      { new: true }
     );
-    res.status(200).json({ message: "Listing updated successfully", listing: updatedListing });
+    res.status(200).json({ message: "Listing updated", listing: updatedListing });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -12,23 +12,25 @@ function HomePage() {
     const fetchListings = async () => {
       try {
         const searchQuery = searchParams.get('search');
-        let response;
+        let url = '/products'; // Default URL to get all products
+
         if (searchQuery) {
-          // If there is a search query, use the search endpoint
+          // If there is a search query, add it to the URL
+          url = `/products?search=${searchQuery}`;
           setPageTitle(`Results for "${searchQuery}"`);
-          response = await API.get(`/products?search=${searchQuery}`);
         } else {
-          // Otherwise, fetch all listings
           setPageTitle('All Ads');
-          response = await API.get('/products');
         }
+
+        const response = await API.get(url);
         setListings(response.data);
       } catch (error) {
         console.error("Failed to fetch listings:", error);
       }
     };
+
     fetchListings();
-  }, [searchParams]); // Re-run this effect whenever the URL search query changes
+  }, [searchParams]); // This effect re-runs every time the URL search query changes
 
   return (
     <div>

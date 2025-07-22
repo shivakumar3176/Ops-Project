@@ -1,3 +1,4 @@
+// src/main.jsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
@@ -12,6 +13,7 @@ import CreateAdPage from './pages/CreateAdPage';
 import ListingDetailPage from './pages/ListingDetailPage';
 import MyAdsPage from './pages/MyAdsPage';
 import ProfilePage from './pages/ProfilePage';
+import EmailVerificationPage from './pages/EmailVerificationPage'; // Import the new page
 
 const AppLayout = () => (
   <>
@@ -31,8 +33,8 @@ const router = createBrowserRouter([
       { path: 'ads/:listingId', element: <ListingDetailPage /> },
       { path: 'login', element: <LoginPage /> },
       { path: 'signup', element: <SignupPage /> },
+      { path: 'verify-email/:token', element: <EmailVerificationPage /> }, // Add the new route
       { path: 'create-ad', element: <CreateAdPage /> },
-      { path: 'edit-ad/:listingId', element: <CreateAdPage /> },
       { path: 'my-ads', element: <MyAdsPage /> },
       { path: 'profile', element: <ProfilePage /> },
     ],

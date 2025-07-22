@@ -1,26 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import API from '../api';
 import '../App.css';
 
 function HomePage() {
   const [listings, setListings] = useState([]);
+  const [searchParams] = useSearchParams();
+  const [pageTitle, setPageTitle] = useState('All Ads');
 
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        const response = await API.get('/products');
+        const searchQuery = searchParams.get('search');
+        let response;
+        if (searchQuery) {
+          // If there is a search query, use the search endpoint
+          setPageTitle(`Results for "${searchQuery}"`);
+          response = await API.get(`/products?search=${searchQuery}`);
+        } else {
+          // Otherwise, fetch all listings
+          setPageTitle('All Ads');
+          response = await API.get('/products');
+        }
         setListings(response.data);
       } catch (error) {
         console.error("Failed to fetch listings:", error);
       }
     };
     fetchListings();
-  }, []);
+  }, [searchParams]); // Re-run this effect whenever the URL search query changes
 
   return (
     <div>
-      <h1 style={{ textAlign: 'center' }}>All Products</h1>
+      <h1 style={{ textAlign: 'center' }}>{pageTitle}</h1>
       <div className="product-grid">
         {listings.length > 0 ? (
           listings.map(listing => (
@@ -34,7 +46,7 @@ function HomePage() {
             </Link>
           ))
         ) : (
-          <p style={{textAlign: 'center'}}>No products found. Post an ad to see it here!</p>
+          <p style={{ textAlign: 'center' }}>No products found.</p>
         )}
       </div>
     </div>

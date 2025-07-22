@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const sendEmail = require("../Utils/sendEmail");
 const crypto = require("crypto");
 
+// Token Generator
 const generateAccessToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "2h" });
 };
@@ -23,7 +24,6 @@ const signup = async (req, res) => {
     const verificationToken = user.generateEmailVerificationToken();
     await user.save();
 
-    // Use your deployed frontend URL here
     const verificationUrl = `https://ops-frontend-wrbp.onrender.com/verify-email/${verificationToken}`;
     const message = `
       <h1>Welcome to OPS!</h1>
@@ -99,7 +99,14 @@ const verifyEmail = async (req, res) => {
     user.emailVerificationTokenExpires = undefined;
     await user.save();
 
-    res.status(200).json({ message: "Email successfully verified." });
+    // Auto-login on email verification
+    const token = generateAccessToken(user._id);
+    res.status(200).json({
+      message: "Email successfully verified.",
+      token,
+      user: { id: user._id, name: user.name, email: user.email }
+    });
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

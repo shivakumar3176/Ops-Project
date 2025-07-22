@@ -334,3 +334,11 @@ body {
   border-radius: 5px;
   background-color: #f8f9fa;
 }
+.footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+  background-color: #343a40;
+  color: #adb5bd;
+  font-size: 0.9rem;
+}

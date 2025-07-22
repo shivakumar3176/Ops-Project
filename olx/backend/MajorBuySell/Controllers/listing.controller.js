@@ -6,11 +6,11 @@ const createListing = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ message: "Image file is required" });
     }
-    const { 
-      name, description, category, condition, price, location, 
-      brand, dateOfPurchase, distanceCovered, sarValue 
+    const {
+      name, description, category, condition, price, location,
+      brand, dateOfPurchase, distanceCovered, sarValue
     } = req.body;
-    
+
     const uploadResult = await uploadOnCloudinary(req.file.path);
 
     if (!uploadResult) {
@@ -18,7 +18,7 @@ const createListing = async (req, res) => {
     }
 
     const listing = new Listing({
-      name, description, category, condition, price, location, 
+      name, description, category, condition, price, location,
       brand, dateOfPurchase, distanceCovered, sarValue,
       image: uploadResult.secure_url,
       postedBy: req.userId,
@@ -33,7 +33,6 @@ const createListing = async (req, res) => {
 
 const getAllListings = async (req, res) => {
   try {
-    // This is the updated search and filter logic
     const { search } = req.query;
     const query = { isAvailable: true };
 
@@ -52,14 +51,11 @@ const getAllListings = async (req, res) => {
   }
 };
 
-// In listing.controller.js
-
 const getListingById = async (req, res) => {
   try {
-    // We now populate name, email, AND phoneNo
     const listing = await Listing.findById(req.params.id)
       .populate("postedBy", "name email phoneNo");
-      
+
     if (!listing) return res.status(404).json({ message: "Listing not found" });
     res.status(200).json(listing);
   } catch (error) {
@@ -80,9 +76,11 @@ const deleteListing = async (req, res) => {
   try {
     const listing = await Listing.findById(req.params.id);
     if (!listing) return res.status(404).json({ message: "Listing not found" });
+
     if (listing.postedBy.toString() !== req.userId) {
       return res.status(403).json({ message: "Not authorized" });
     }
+
     await Listing.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "Listing deleted successfully" });
   } catch (error) {
@@ -97,14 +95,16 @@ const updateListing = async (req, res) => {
       return res.status(404).json({ message: "Listing not found" });
     }
     if (listing.postedBy.toString() !== req.userId) {
-      return res.status(403).json({ message: "User not authorized" });
+      return res.status(403).json({ message: "User not authorized to update this listing" });
     }
+
     const updatedListing = await Listing.findByIdAndUpdate(
       req.params.id,
       req.body,
       { new: true }
     );
-    res.status(200).json({ message: "Listing updated", listing: updatedListing });
+
+    res.status(200).json({ message: "Listing updated successfully", listing: updatedListing });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

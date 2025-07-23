@@ -21,7 +21,8 @@ function SignupPage() {
     setError('');
     try {
       await API.post('/auth/signup', formData);
-      navigate('/login');
+      // Navigate to the 'Check Email' page and pass the email in the state
+      navigate('/check-email', { state: { email: formData.email } });
     } catch (err) {
       setError(err.response?.data?.message || 'An error occurred during signup.');
     }

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import './index.css';
 import { AuthProvider } from './context/AuthContext';
+
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import WelcomePage from './pages/WelcomePage';
@@ -14,6 +15,7 @@ import ListingDetailPage from './pages/ListingDetailPage';
 import MyAdsPage from './pages/MyAdsPage';
 import ProfilePage from './pages/ProfilePage';
 import EmailVerificationPage from './pages/EmailVerificationPage';
+import CheckEmailPage from './pages/CheckEmailPage'; // 1. Import the new page
 
 const AppLayout = () => (
   <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -34,6 +36,7 @@ const router = createBrowserRouter([
       { path: 'ads/:listingId', element: <ListingDetailPage /> },
       { path: 'login', element: <LoginPage /> },
       { path: 'signup', element: <SignupPage /> },
+      { path: 'check-email', element: <CheckEmailPage /> }, // 2. Add the new route
       { path: 'verify-email/:token', element: <EmailVerificationPage /> },
       { path: 'create-ad', element: <CreateAdPage /> },
       { path: 'edit-ad/:listingId', element: <CreateAdPage /> },

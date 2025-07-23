@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken");
 const sendEmail = require("../Utils/sendEmail");
 const crypto = require("crypto");
 
-// Token Generator
 const generateAccessToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "2h" });
 };
@@ -14,12 +13,15 @@ const signup = async (req, res) => {
   try {
     const { name, email, phoneNo, password } = req.body;
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+    let user = await User.findOne({ email });
+    // If user exists but is not verified, delete them to allow re-signup
+    if (user && !user.isEmailVerified) {
+      await User.findByIdAndDelete(user._id);
+    } else if (user && user.isEmailVerified) {
+      return res.status(400).json({ message: "User with this email already exists and is verified." });
     }
 
-    const user = new User({ name, email, phoneNo, password });
+    user = new User({ name, email, phoneNo, password });
 
     const verificationToken = user.generateEmailVerificationToken();
     await user.save();
@@ -81,7 +83,7 @@ const login = async (req, res) => {
 const verifyEmail = async (req, res) => {
   try {
     const verificationToken = crypto
-      .createHash('sha256')
+      .createHash('sha266')
       .update(req.params.token)
       .digest('hex');
 
@@ -99,21 +101,61 @@ const verifyEmail = async (req, res) => {
     user.emailVerificationTokenExpires = undefined;
     await user.save();
 
-    // Auto-login on email verification
     const token = generateAccessToken(user._id);
     res.status(200).json({
       message: "Email successfully verified.",
       token,
       user: { id: user._id, name: user.name, email: user.email }
     });
-
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
+// ===================== RESEND VERIFICATION EMAIL =====================
+const resendVerificationEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ message: "Email is required." });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    if (user.isEmailVerified) {
+      return res.status(400).json({ message: "This account is already verified." });
+    }
+
+    const verificationToken = user.generateEmailVerificationToken();
+    await user.save();
+
+    const verificationUrl = `https://ops-frontend-wrbp.onrender.com/verify-email/${verificationToken}`;
+    const message = `
+      <h1>Resent: Verify Your Email for OPS</h1>
+      <p>Please click the link below to verify your email address:</p>
+      <a href="${verificationUrl}" target="_blank">Verify Your Email</a>
+      <p>This link will expire in 10 minutes.</p>
+    `;
+
+    await sendEmail({
+      email: user.email,
+      subject: 'OPS - Resend Email Verification',
+      html: message,
+    });
+
+    res.status(200).json({ message: "Verification email sent. Please check your inbox." });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
 module.exports = {
   signup,
   login,
   verifyEmail,
+  resendVerificationEmail,
 };

@@ -38,11 +38,11 @@ function Navbar() {
       </form>
 
       <div className="nav-links">
-        <Link to="/ads">All Ads</Link>
+        <Link to="/ads">All Products</Link>
         {token ? (
           <>
             <Link to="/create-ad" className="post-ad-btn">Post Ad</Link>
-            <Link to="/my-ads">My Ads</Link>
+            <Link to="/my-ads">My Products</Link>
             <Link to="/profile">Profile</Link>
             <button onClick={handleLogout}>Logout</button>
           </>

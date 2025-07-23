@@ -17,14 +17,13 @@ function CreateAdPage() {
     brand: '',
     dateOfPurchase: ''
   });
-  const [image, setImage] = useState(null); // This state will hold the image file
+  const [image, setImage] = useState(null);
   const [error, setError] = useState('');
   const [pageTitle, setPageTitle] = useState('Post a New Ad');
 
   useEffect(() => {
     if (isEditMode) {
       setPageTitle('Update Your Ad');
-      // FIX: Added backticks (`) for the template literal
       API.get(`/products/${listingId}`)
         .then(response => {
           const listing = response.data;
@@ -54,20 +53,20 @@ function CreateAdPage() {
 
     try {
       if (isEditMode) {
-        // FIX: Added backticks (`) for the template literal
         await API.put(`/products/${listingId}`, formData);
         navigate('/my-ads');
       } else {
-        // FIX: Use the 'image' from state instead of e.target
         if (!image) {
           setError('Please select an image for a new ad.');
           return;
         }
         const dataToSubmit = new FormData();
         for (const key in formData) {
-          dataToSubmit.append(key, formData[key]);
+          if (formData[key]) {
+            dataToSubmit.append(key, formData[key]);
+          }
         }
-        dataToSubmit.append('image', image); // Use the image from state here
+        dataToSubmit.append('image', image);
         await API.post('/products', dataToSubmit);
         navigate('/ads');
       }
@@ -86,7 +85,6 @@ function CreateAdPage() {
         <input name="location" type="text" placeholder="Location" value={formData.location} onChange={handleChange} required />
         
         <label>Category</label>
-        {/* FIX: Values now match the backend schema exactly */}
         <select name="category" value={formData.category} onChange={handleChange} required>
           <option value="Other">Other</option>
           <option value="Vehicles">Vehicles</option>
@@ -98,7 +96,6 @@ function CreateAdPage() {
         </select>
 
         <label>Condition</label>
-        {/* FIX: Values now match the backend schema exactly */}
         <select name="condition" value={formData.condition} onChange={handleChange} required>
           <option value="New">New</option>
           <option value="Used - Like New">Used - Like New</option>
@@ -114,7 +111,6 @@ function CreateAdPage() {
         {!isEditMode && (
           <>
             <label htmlFor="image">Item Image</label>
-            {/* FIX: The onChange here correctly updates the 'image' state variable */}
             <input type="file" id="image" name="image" onChange={(e) => setImage(e.target.files[0])} required />
           </>
         )}

@@ -34,7 +34,7 @@ function MyAdsPage() {
 
   return (
     <div>
-      <h1 style={{ textAlign: 'center' }}>My Ads</h1>
+      <h1 style={{ textAlign: 'center' }}>My Products</h1>
       <div className="product-grid">
         {myListings.length > 0 ? (
           myListings.map(listing => (

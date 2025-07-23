@@ -3,9 +3,8 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import './index.css';
 import { AuthProvider } from './context/AuthContext';
-
 import Navbar from './components/Navbar';
-import Footer from './components/Footer'; // 1. Import the Footer
+import Footer from './components/Footer';
 import WelcomePage from './pages/WelcomePage';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -22,7 +21,7 @@ const AppLayout = () => (
     <main style={{ flex: 1 }}>
       <Outlet />
     </main>
-    <Footer /> {/* 2. Add the Footer here */}
+    <Footer />
   </div>
 );
 
@@ -37,6 +36,7 @@ const router = createBrowserRouter([
       { path: 'signup', element: <SignupPage /> },
       { path: 'verify-email/:token', element: <EmailVerificationPage /> },
       { path: 'create-ad', element: <CreateAdPage /> },
+      { path: 'edit-ad/:listingId', element: <CreateAdPage /> },
       { path: 'my-ads', element: <MyAdsPage /> },
       { path: 'profile', element: <ProfilePage /> },
     ],

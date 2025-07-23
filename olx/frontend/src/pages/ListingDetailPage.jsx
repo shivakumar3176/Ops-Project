@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import API from '../api';
 import { useAuth } from '../context/AuthContext';
-import Spinner from '../components/Spinner';
+import Spinner from '../components/Spinner.jsx';
 import ReviewForm from '../components/ReviewForm';
 import BuyModal from '../components/BuyModal'; // Import the new modal
 import '../App.css';

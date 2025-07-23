@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import API from '../api';
 import { useAuth } from '../context/AuthContext';
+import Spinner from '../components/Spinner';
 import ReviewForm from '../components/ReviewForm';
+import BuyModal from '../components/BuyModal'; // Import the new modal
 import '../App.css';
 
 function ListingDetailPage() {
@@ -12,6 +14,7 @@ function ListingDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [hasReviewed, setHasReviewed] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for the modal
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -30,9 +33,9 @@ function ListingDetailPage() {
   
   const handleNewReview = () => {
     setHasReviewed(true);
-  }
+  };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Spinner />;
   if (error) return <p className="error-message">{error}</p>;
   if (!listing) return <p>Listing not found.</p>;
   
@@ -52,18 +55,24 @@ function ListingDetailPage() {
           <h3>Description</h3>
           <p>{listing.description}</p>
 
-          {/* Contact Seller Button and Info */}
-          {user && !isSeller && (
-            <div className="contact-section">
-              {/* Add your contact seller logic/button here if you want */}
-            </div>
+          {/* --- Buy Now Button --- */}
+          {user && !isSeller && listing.isAvailable && (
+            <button onClick={() => setIsModalOpen(true)} className="buy-now-btn">
+              Buy Now
+            </button>
           )}
+          {!listing.isAvailable && <p className="sold-out-message">This item is no longer available.</p>}
         </div>
       </div>
 
       {/* --- Review Form Logic --- */}
       {user && !isSeller && !hasReviewed && (
         <ReviewForm listingId={listing._id} onReviewSubmit={handleNewReview} />
+      )}
+
+      {/* --- Render the Modal --- */}
+      {isModalOpen && (
+        <BuyModal listingId={listing._id} onClose={() => setIsModalOpen(false)} />
       )}
     </>
   );

@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast'; // 1. Import Toaster
 import './index.css';
 import { AuthProvider } from './context/AuthContext';
 
@@ -15,10 +16,11 @@ import ListingDetailPage from './pages/ListingDetailPage';
 import MyAdsPage from './pages/MyAdsPage';
 import ProfilePage from './pages/ProfilePage';
 import EmailVerificationPage from './pages/EmailVerificationPage';
-import CheckEmailPage from './pages/CheckEmailPage'; // 1. Import the new page
+import CheckEmailPage from './pages/CheckEmailPage';
 
 const AppLayout = () => (
   <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <Toaster position="top-center" reverseOrder={false} /> {/* 2. Add Toaster here */}
     <Navbar />
     <main style={{ flex: 1 }}>
       <Outlet />
@@ -36,7 +38,7 @@ const router = createBrowserRouter([
       { path: 'ads/:listingId', element: <ListingDetailPage /> },
       { path: 'login', element: <LoginPage /> },
       { path: 'signup', element: <SignupPage /> },
-      { path: 'check-email', element: <CheckEmailPage /> }, // 2. Add the new route
+      { path: 'check-email', element: <CheckEmailPage /> },
       { path: 'verify-email/:token', element: <EmailVerificationPage /> },
       { path: 'create-ad', element: <CreateAdPage /> },
       { path: 'edit-ad/:listingId', element: <CreateAdPage /> },

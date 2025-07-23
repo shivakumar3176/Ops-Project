@@ -9,6 +9,8 @@ const authRoutes = require("./MajorBuySell/Routes/auth.route");
 const listingRoutes = require("./MajorBuySell/Routes/listing.route");
 const userRoutes = require("./MajorBuySell/Routes/user.route");
 const reviewRoutes = require("./MajorBuySell/Routes/review.route");
+const orderRoutes = require("./MajorBuySell/Routes/order.route");
+
 
 const port = process.env.PORT || 3000;
 
@@ -27,6 +29,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/products", listingRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/orders", orderRoutes);
 
 // Connect to Database and Start Server
 connectDB().then(() => {

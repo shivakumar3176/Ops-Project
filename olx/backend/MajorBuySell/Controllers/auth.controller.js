@@ -1,6 +1,6 @@
 const User = require("../Models/user.model");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const jwt =require("jsonwebtoken");
 const sendEmail = require("../Utils/sendEmail");
 const crypto = require("crypto");
 
@@ -14,7 +14,6 @@ const signup = async (req, res) => {
     const { name, email, phoneNo, password } = req.body;
 
     let user = await User.findOne({ email });
-    // If user exists but is not verified, delete them to allow re-signup
     if (user && !user.isEmailVerified) {
       await User.findByIdAndDelete(user._id);
     } else if (user && user.isEmailVerified) {
@@ -83,7 +82,7 @@ const login = async (req, res) => {
 const verifyEmail = async (req, res) => {
   try {
     const verificationToken = crypto
-      .createHash('sha266')
+      .createHash('sha256') // FIX: Corrected from 'sha266'
       .update(req.params.token)
       .digest('hex');
 

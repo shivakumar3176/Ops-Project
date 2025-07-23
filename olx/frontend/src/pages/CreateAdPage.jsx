@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import API from '../api';
+import toast from 'react-hot-toast'; // Import toast
 
 function CreateAdPage() {
   const navigate = useNavigate();
@@ -18,8 +19,7 @@ function CreateAdPage() {
     dateOfPurchase: ''
   });
   const [image, setImage] = useState(null);
-  const [error, setError] = useState('');
-  const [pageTitle, setPageTitle] = useState('Post a New Ad');
+  const [pageTitle, setPageTitle] = useState('Post a New Product');
 
   useEffect(() => {
     if (isEditMode) {
@@ -39,7 +39,7 @@ function CreateAdPage() {
             dateOfPurchase: formattedDate,
           });
         })
-        .catch(err => setError("Could not fetch listing data."));
+        .catch(err => toast.error("Could not fetch listing data."));
     }
   }, [listingId, isEditMode]);
 
@@ -49,15 +49,14 @@ function CreateAdPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-
     try {
       if (isEditMode) {
         await API.put(`/products/${listingId}`, formData);
+        toast.success('Product updated successfully!');
         navigate('/my-ads');
       } else {
         if (!image) {
-          setError('Please select an image for a new Product.');
+          toast.error('Please select an image.');
           return;
         }
         const dataToSubmit = new FormData();
@@ -68,10 +67,12 @@ function CreateAdPage() {
         }
         dataToSubmit.append('image', image);
         await API.post('/products', dataToSubmit);
+        toast.success('Product posted successfully!');
         navigate('/ads');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Operation failed.');
+      const errorMessage = err.response?.data?.message || 'Operation failed.';
+      toast.error(errorMessage);
     }
   };
 
@@ -117,7 +118,7 @@ function CreateAdPage() {
         
         <button type="submit">{isEditMode ? 'Update Product' : 'Post Product'}</button>
       </form>
-      {error && <p className="error-message">{error}</p>}
+      {/* The old error message is no longer needed because of toast */}
     </div>
   );
 }

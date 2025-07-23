@@ -342,3 +342,12 @@ body {
   color: #adb5bd;
   font-size: 0.9rem;
 }
+.navbar-brand {
+  font-size: 1.7rem;
+  font-weight: 700;
+  text-decoration: none;
+  background: linear-gradient(45deg, #f97700, #ffc800);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

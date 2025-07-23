@@ -19,7 +19,7 @@ function HomePage() {
           url = `/products?search=${searchQuery}`;
           setPageTitle(`Results for "${searchQuery}"`);
         } else {
-          setPageTitle('All Ads');
+          setPageTitle('All Products');
         }
 
         const response = await API.get(url);
@@ -42,6 +42,7 @@ function HomePage() {
               <div className="product-card">
                 <img src={listing.image} alt={listing.name} />
                 <h3>{listing.name}</h3>
+                 <p><strong>Brand:</strong> {listing.brand || 'N/A'}</p>
                 <p className="product-price">₹{listing.price}</p>
                 <p className="product-location">{listing.location}</p>
               </div>

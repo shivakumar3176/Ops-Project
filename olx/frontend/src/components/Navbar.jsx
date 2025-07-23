@@ -22,7 +22,8 @@ function Navbar() {
 
   return (
     <nav className="navbar">
-      <Link to="/" style={{ fontWeight: 'bold', textDecoration: 'none', color: 'black' }}>
+      {/* Use the new className for the brand link */}
+      <Link to="/" className="navbar-brand">
         OPS
       </Link>
 

@@ -23,7 +23,7 @@ function CreateAdPage() {
 
   useEffect(() => {
     if (isEditMode) {
-      setPageTitle('Update Your Ad');
+      setPageTitle('Update Your Product');
       API.get(`/products/${listingId}`)
         .then(response => {
           const listing = response.data;
@@ -57,7 +57,7 @@ function CreateAdPage() {
         navigate('/my-ads');
       } else {
         if (!image) {
-          setError('Please select an image for a new ad.');
+          setError('Please select an image for a new Product.');
           return;
         }
         const dataToSubmit = new FormData();
@@ -115,7 +115,7 @@ function CreateAdPage() {
           </>
         )}
         
-        <button type="submit">{isEditMode ? 'Update Ad' : 'Post Ad'}</button>
+        <button type="submit">{isEditMode ? 'Update Product' : 'Post Product'}</button>
       </form>
       {error && <p className="error-message">{error}</p>}
     </div>

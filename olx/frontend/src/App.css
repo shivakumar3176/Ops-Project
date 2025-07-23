@@ -426,3 +426,65 @@ body {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+/* --- Responsive Styles for Mobile --- */
+.hamburger-menu {
+  display: none; /* Hidden on desktop */
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .nav-search-form {
+    display: none; /* Hide search bar in nav on mobile */
+  }
+
+  .nav-links {
+    display: none; /* Hide the desktop links */
+  }
+
+  .hamburger-menu {
+    display: block; /* Show the hamburger icon */
+  }
+
+  .mobile-nav-links {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 60px; /* Position below navbar */
+    right: 0;
+    background-color: white;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 10px 0;
+  }
+  
+  .mobile-nav-links a, .mobile-nav-links button {
+    text-align: center;
+    padding: 15px;
+    width: 100%;
+  }
+}
+.filter-select {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  margin-right: 10px;
+}
+.empty-state-container {
+  text-align: center;
+  padding: 80px 20px;
+  margin: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+.empty-state-container h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+.empty-state-container p {
+  color: #6c757d;
+  margin-bottom: 20px;
+}

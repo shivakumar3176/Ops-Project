@@ -33,15 +33,21 @@ const createListing = async (req, res) => {
 
 const getAllListings = async (req, res) => {
   try {
-    const { search } = req.query;
+    // Start with a base query
     const query = { isAvailable: true };
 
-    if (search) {
+    // Add filters from the request query if they exist
+    if (req.query.search) {
       query.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { description: { $regex: search, $options: "i" } },
-        { category: { $regex: search, $options: "i" } }
+        { name: { $regex: req.query.search, $options: "i" } },
+        { description: { $regex: req.query.search, $options: "i" } },
       ];
+    }
+    if (req.query.category) {
+      query.category = req.query.category;
+    }
+    if (req.query.condition) {
+      query.condition = req.query.condition;
     }
 
     const listings = await Listing.find(query).populate("postedBy", "name");
